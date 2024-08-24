@@ -3,7 +3,7 @@ name: build_push
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "*.*.*"
 
 jobs:
   docker:
@@ -23,5 +23,5 @@ jobs:
         with:
           push: true
           tags: |
-            snowhork/saturn:${{ github.ref }}
+            snowhork/saturn:${{ github.ref_name }}
             snowhork/saturn:latest
