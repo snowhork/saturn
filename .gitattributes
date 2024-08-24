@@ -1,0 +1,5 @@
+frontend/src/gen/** linguist-generated=true
+backend/openapi.json linguist-generated=true
+backend/requirements.lock linguist-generated=true
+backend/requirements-dev.lock linguist-generated=true
+frontend/yarn.lock linguist-generated=true

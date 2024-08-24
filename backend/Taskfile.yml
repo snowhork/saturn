@@ -1,0 +1,20 @@
+version: "3"
+
+tasks:
+  lint:
+    cmds:
+      - rye run mypy api/
+      - rye run ruff check api/
+
+  dev:
+    cmd: rye run uvicorn api.main:app --reload
+
+  fmt:
+    cmds:
+      - rye run ruff format api/
+      - rye run ruff check api/ --fix
+
+  gen:
+    cmds:
+      - rye run python openapi.py
+      - cd ../frontend/ && yarn gen

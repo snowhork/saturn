@@ -1,0 +1,43 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "snowhork" }
+]
+dependencies = [
+    "ruff>=0.5.7",
+    "mypy>=1.11.1",
+    "fastapi>=0.112.0",
+    "uvicorn>=0.30.5",
+    "requests-oauthlib>=2.0.0",
+    "oauthlib>=3.2.2",
+    "google-api-python-client>=2.140.0",
+    "google-auth-httplib2>=0.2.0",
+    "google-auth-oauthlib>=1.2.1",
+    "pydantic-settings>=2.4.0",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["api/"]
+
+[[tool.mypy.overrides]]
+module = [
+    "requests_oauthlib",
+    "googleapiclient.discovery",
+    "googleapiclient.http",
+]
+ignore_missing_imports = true
