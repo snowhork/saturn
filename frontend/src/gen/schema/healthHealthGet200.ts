@@ -8,7 +8,6 @@
 export type HealthHealthGet200 =
   (typeof HealthHealthGet200)[keyof typeof HealthHealthGet200];
 
- 
 export const HealthHealthGet200 = {
   ok: "ok",
 } as const;

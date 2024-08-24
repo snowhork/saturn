@@ -7,7 +7,6 @@
 
 export type StorageType = (typeof StorageType)[keyof typeof StorageType];
 
- 
 export const StorageType = {
   google_drive: "google_drive",
   local: "local",
