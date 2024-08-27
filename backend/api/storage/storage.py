@@ -74,6 +74,7 @@ class GoogleDriveStorage(Storage):
                     q=f"'{id}' in parents and trashed=false",
                     supportsAllDrives=True,
                     includeItemsFromAllDrives=True,
+                    pageSize=1000,
                 )
                 .execute()["files"]
             )
