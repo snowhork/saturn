@@ -93,7 +93,7 @@ export const RootNode = () => {
     (_e: React.SyntheticEvent, ids: string[]) => {
       context.setSelectedItems(ids.map((id) => context.itemMap[id]));
     },
-    [context]
+    [context],
   );
 
   useEffect(() => {

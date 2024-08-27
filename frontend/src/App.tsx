@@ -5,12 +5,13 @@ import {
 } from "./gen/default/default";
 import { RootNode } from "./StorageTree";
 import { Item, Storage } from "./gen/schema";
-import { Modal } from "@mui/material";
+import { Alert, Modal, Snackbar, SnackbarCloseReason } from "@mui/material";
 import StorageProvider, {
   StorageContextType,
   useInitStorageContext,
 } from "./StorageProvider";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 const transferEnabled = (fromItems: Item[], toItems: Item[]) => {
   if (toItems.length === 0 || fromItems.length === 0) return false;
@@ -90,17 +91,80 @@ const ButtonWithModal = ({
   >("closed");
 
   const [transferring, setTransferring] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  const onTransfer = useCallback(
+    async (from: StorageContextType, to: StorageContextType) => {
+      setTransferring(true);
+      try {
+        await transfer(from, to);
+        setSuccess(true);
+      } catch {
+        setFailed(true);
+      } finally {
+        setTransferring(false);
+      }
+
+      setModalState("closed");
+    },
+    [],
+  );
+
+  const onSuccessSnackBarClose = useCallback(
+    (_e: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
+      if (reason === "clickaway") {
+        return;
+      }
+
+      setSuccess(false);
+    },
+    [],
+  );
+
+  const onFailedSnackBarClose = useCallback(
+    (_e: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
+      if (reason === "clickaway") {
+        return;
+      }
+
+      setFailed(false);
+    },
+    [],
+  );
 
   return (
     <>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={success}
+        onClose={onSuccessSnackBarClose}
+        autoHideDuration={3000}
+      >
+        <Alert severity="success" variant="filled" sx={{ width: "100%" }}>
+          Success!
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={failed}
+        onClose={onFailedSnackBarClose}
+        autoHideDuration={3000}
+      >
+        <Alert severity="error" variant="filled" sx={{ width: "100%" }}>
+          Failed. Please check server logs.
+        </Alert>
+      </Snackbar>
+
       <button
-        className="fixed bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded text-sm top-1/4 disabled:bg-blue-200"
+        className="fixed bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded text-sm top-1/4 disabled:bg-blue-100"
         disabled={
           !transferEnabled(context1.selectedItems, context2.selectedItems)
         }
         onClick={() => setModalState("right_arrow")}
       >
-        ➡️
+        <FaArrowRight />
       </button>
       <Modal
         open={modalState != "closed"}
@@ -121,7 +185,11 @@ const ButtonWithModal = ({
               </ul>
             </div>
             <div className="mx-8 mt-2">
-              {modalState === "right_arrow" ? "➡️" : "⬅️"}
+              {modalState === "right_arrow" ? (
+                <FaArrowRight />
+              ) : (
+                <FaArrowLeft />
+              )}
             </div>
             <div className="w-1/2 text-left">
               <div className="font-bold text-sm">{context2.storage.name}</div>
@@ -137,34 +205,16 @@ const ButtonWithModal = ({
           <div className="flex mt-4 justify-center">
             {modalState === "right_arrow" ? (
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-xs disabled:bg-blue-200"
-                onClick={async () => {
-                  setTransferring(true);
-
-                  try {
-                    await transfer(context1, context2);
-                  } finally {
-                    setTransferring(false);
-                  }
-                  setModalState("closed");
-                }}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-xs disabled:bg-blue-100"
+                onClick={() => onTransfer(context1, context2)}
                 disabled={transferring}
               >
                 Transfer
               </button>
             ) : (
               <button
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs disabled:bg-green-200"
-                onClick={async () => {
-                  setTransferring(true);
-                  try {
-                    await transfer(context2, context1);
-                  } finally {
-                    setTransferring(false);
-                  }
-
-                  setModalState("closed");
-                }}
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs disabled:bg-green-100"
+                onClick={() => onTransfer(context2, context1)}
                 disabled={transferring}
               >
                 Transfer
@@ -174,13 +224,13 @@ const ButtonWithModal = ({
         </div>
       </Modal>
       <button
-        className="fixed bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded text-sm top-1/4 mt-12  disabled:bg-green-200"
+        className="fixed bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded text-sm top-1/4 mt-12  disabled:bg-green-100"
         disabled={
           !transferEnabled(context2.selectedItems, context1.selectedItems)
         }
         onClick={() => setModalState("left_arrow")}
       >
-        ⬅️
+        <FaArrowLeft />
       </button>
     </>
   );
