@@ -1,0 +1,15 @@
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "6644:6644"
+
+    volumes:
+      - ./backend:/var/data
+
+    environment:
+      - LOCAL_STORAGE_TARGET_PATH=/var/data
+      - GOOGLE_DRIVE_STORAGE_ROOT_FOLDER_ID=${GOOGLE_DRIVE_STORAGE_ROOT_FOLDER_ID}
+      - GOOGLE_DRIVE_STORAGE_OAUTH_CLIENT_ID=${GOOGLE_DRIVE_STORAGE_OAUTH_CLIENT_ID}
+      - GOOGLE_DRIVE_STORAGE_OAUTH_CLIENT_SECRET=${GOOGLE_DRIVE_STORAGE_OAUTH_CLIENT_SECRET}

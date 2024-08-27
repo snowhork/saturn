@@ -1,6 +1,7 @@
 import { useListItemsItemsGet, useRootDirRootGet } from "./gen/default/default";
 import { Item } from "./gen/schema";
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
+import { useTreeViewApiRef } from "@mui/x-tree-view/hooks";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { useCallback, useEffect } from "react";
@@ -102,10 +103,20 @@ export const RootNode = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]); // ignore context change
 
+  const apiRef = useTreeViewApiRef();
+
+  useEffect(() => {
+    const rootFolderID = data?.data.id;
+    if (rootFolderID) {
+      apiRef.current?.setItemExpansion({} as never, rootFolderID, true);
+    }
+  }, [apiRef, data?.data.id]);
+
   return (
     <SimpleTreeView
       onSelectedItemsChange={handleSelectedItems}
       multiSelect={true}
+      apiRef={apiRef}
     >
       {data && <Leaf key={data?.data.name} item={data?.data} />}
     </SimpleTreeView>
