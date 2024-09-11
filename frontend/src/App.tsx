@@ -13,6 +13,9 @@ import StorageProvider, {
 import { useCallback, useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
+import { DndContext } from "@dnd-kit/core";
+import DragProvider from "./DragProvider";
+
 const transferEnabled = (fromItems: Item[], toItems: Item[]) => {
   if (toItems.length === 0 || fromItems.length === 0) return false;
   if (!toItems[0].is_dir || toItems.length > 1) return false;
@@ -29,8 +32,9 @@ const Storages = ({
 }) => {
   const context1 = useInitStorageContext(storage1);
   const context2 = useInitStorageContext(storage2);
+
   return (
-    <>
+    <DragProvider context1={context1} context2={context2}>
       <div className="w-1/2">
         <div className="font-bold">{storage1.name}</div>
         <StorageProvider context={context1}>
@@ -46,7 +50,7 @@ const Storages = ({
           <RootNode />
         </StorageProvider>
       </div>
-    </>
+    </DragProvider>
   );
 };
 
@@ -108,7 +112,7 @@ const ButtonWithModal = ({
 
       setModalState("closed");
     },
-    [],
+    []
   );
 
   const onSuccessSnackBarClose = useCallback(
@@ -119,7 +123,7 @@ const ButtonWithModal = ({
 
       setSuccess(false);
     },
-    [],
+    []
   );
 
   const onFailedSnackBarClose = useCallback(
@@ -130,7 +134,7 @@ const ButtonWithModal = ({
 
       setFailed(false);
     },
-    [],
+    []
   );
 
   return (

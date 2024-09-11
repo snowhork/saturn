@@ -12,6 +12,7 @@
     "gen": "yarn run orval"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.1.0",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "@mui/material": "^5.16.7",
