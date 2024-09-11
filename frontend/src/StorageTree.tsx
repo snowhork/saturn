@@ -7,6 +7,7 @@ import { FaExternalLinkAlt } from "react-icons/fa";
 import { useCallback, useEffect } from "react";
 import { useStorageContext } from "./StorageProvider";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
+import { useDragContext } from "./DragProvider";
 
 const DirLeaf = ({ item }: { item: Item }) => {
   const context = useStorageContext();
@@ -19,8 +20,8 @@ const DirLeaf = ({ item }: { item: Item }) => {
 
   useEffect(() => {
     if (data) {
-      for (const item of data.data) {
-        context.addItem(item.id, item);
+      for (const child of data.data) {
+        context.addItem(child.id, child, item.id);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -75,7 +76,11 @@ const Leaf = ({ item }: { item: Item }) => {
     id: storageNameItemId,
   });
 
-  const { setNodeRef: droppableRef, isOver } = useDroppable({
+  const { dstID } = useDragContext();
+
+  const isOver = dstID == item.id;
+
+  const { setNodeRef: droppableRef } = useDroppable({
     id: storageNameItemId,
   });
 
@@ -147,14 +152,14 @@ export const RootNode = () => {
 
   const handleSelectedItems = useCallback(
     (_e: React.SyntheticEvent, ids: string[]) => {
-      context.setSelectedItems(ids.map((id) => context.itemMap[id]));
+      context.setSelectedItems(ids.map((id) => context.itemMap[id].item));
     },
     [context]
   );
 
   useEffect(() => {
     if (data) {
-      context.addItem(data.data.id, data.data);
+      context.addItem(data.data.id, data.data, null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]); // ignore context change

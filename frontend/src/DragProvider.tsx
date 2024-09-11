@@ -1,9 +1,22 @@
-import { DndContext } from "@dnd-kit/core";
+import { Active, DndContext, Over } from "@dnd-kit/core";
 import { StorageContextType } from "./StorageProvider";
+import { createContext, useCallback, useContext, useState } from "react";
 
 const splitItemID = (input: string) => {
   const parts = input.split(/:(.+)/);
   return { storageName: parts[0], itemID: parts[1] };
+};
+
+export type DragContextType = {
+  dstID: string | null;
+};
+
+const DragContext = createContext<DragContextType | null>(null);
+
+export const useDragContext = () => {
+  const context = useContext(DragContext);
+  if (!context) throw new Error("Storage context not found");
+  return context;
 };
 
 const DragProvider = ({
@@ -15,48 +28,66 @@ const DragProvider = ({
   context1: StorageContextType;
   context2: StorageContextType;
 }) => {
+  const [srcID, setSrcID] = useState<string | null>(null);
+  const [dstID, setDstID] = useState<string | null>(null);
+
+  const onDrag = useCallback(
+    (event: { active: Active; over: Over | null }) => {
+      const { active, over } = event;
+      if (!over) {
+        setDstID(null);
+        return;
+      }
+
+      const srcStorageNameItemID = splitItemID(active.id as string);
+      const dstStorageNameItemID = splitItemID(over.id as string);
+
+      if (
+        srcStorageNameItemID.storageName === dstStorageNameItemID.storageName
+      ) {
+        setDstID(null);
+        return;
+      }
+
+      let src, dst;
+      if (srcStorageNameItemID.storageName == context1.storage.name) {
+        src = context1.itemMap[srcStorageNameItemID.itemID];
+        dst = context2.itemMap[dstStorageNameItemID.itemID];
+
+        if (!dst.item.is_dir) {
+          if (dst.parentID == null) {
+            throw new Error("Invalid parentID");
+          }
+          dst = context2.itemMap[dst.parentID];
+        }
+      } else {
+        src = context2.itemMap[srcStorageNameItemID.itemID];
+        dst = context1.itemMap[dstStorageNameItemID.itemID];
+
+        if (!dst.item.is_dir) {
+          if (dst.parentID == null) {
+            throw new Error("Invalid parentID");
+          }
+          dst = context1.itemMap[dst.parentID];
+        }
+      }
+
+      setDstID(dst.item.id);
+    },
+    [context1, context2]
+  );
+
+  const onDragEnd = useCallback(() => {
+    setSrcID(null);
+    setDstID(null);
+  }, []);
+
   return (
-    <DndContext
-      onDragMove={(event) => {
-        // console.log("onDragEnd", event);
-        const { active, over } = event;
-        if (!over) return;
-        // console.log("onDragEnd", active, over);
-
-        const srcStorageNameItemID = splitItemID(active.id as string);
-        const dstStorageNameItemID = splitItemID(over.id as string);
-
-        if (
-          srcStorageNameItemID.storageName === dstStorageNameItemID.storageName
-        )
-          return;
-
-        let srcItem, dstItem;
-        if (srcStorageNameItemID.storageName == context1.storage.name) {
-          srcItem = context1.itemMap[srcStorageNameItemID.itemID];
-          dstItem = context2.itemMap[dstStorageNameItemID.itemID];
-        } else {
-          srcItem = context2.itemMap[srcStorageNameItemID.itemID];
-          dstItem = context1.itemMap[dstStorageNameItemID.itemID];
-        }
-
-        console.log(srcItem, dstItem);
-
-        // const parts = input.split(/:(.+)/);
-        // return [parts[0], parts[1]];
-        // active;
-
-        // context1.itemMap[active.id];
-
-        if (over == null) {
-          return;
-        }
-
-        // console.log(over);
-      }}
-    >
-      {children}
-    </DndContext>
+    <DragContext.Provider value={{ dstID }}>
+      <DndContext onDragOver={onDrag} onDragEnd={onDragEnd}>
+        {children}
+      </DndContext>
+    </DragContext.Provider>
   );
 };
 
