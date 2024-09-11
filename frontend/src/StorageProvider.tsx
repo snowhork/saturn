@@ -27,7 +27,7 @@ export const useStorageContext = () => {
 
 export const useInitStorageContext = (storage: Storage): StorageContextType => {
   const [authState, setAuthState] = useState<"waiting" | "ready">(
-    storage.type === "local" ? "ready" : "waiting"
+    storage.type === "local" ? "ready" : "waiting",
   );
   const [itemMap, setItemMap] = useState<
     Record<string, { item: Item; parentID: string | null }>
@@ -37,7 +37,7 @@ export const useInitStorageContext = (storage: Storage): StorageContextType => {
     (id: string, item: Item, parentID: string | null) => {
       setItemMap((prev) => ({ ...prev, [id]: { item, parentID } }));
     },
-    []
+    [],
   );
 
   const [googleDriveOauthToken, _setGoogleDriveOauthToken] =

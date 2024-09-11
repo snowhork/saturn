@@ -4,24 +4,16 @@ import {
   useListStoragesGet,
 } from "./gen/default/default";
 import { RootNode } from "./StorageTree";
-import { Item, Storage } from "./gen/schema";
+import { Storage } from "./gen/schema";
 import { Alert, Modal, Snackbar, SnackbarCloseReason } from "@mui/material";
 import StorageProvider, {
   StorageContextType,
   useInitStorageContext,
 } from "./StorageProvider";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
-import { DndContext } from "@dnd-kit/core";
-import DragProvider from "./DragProvider";
-
-const transferEnabled = (fromItems: Item[], toItems: Item[]) => {
-  if (toItems.length === 0 || fromItems.length === 0) return false;
-  if (!toItems[0].is_dir || toItems.length > 1) return false;
-
-  return true;
-};
+import DragProvider, { StorageNameItem } from "./DragProvider";
 
 const Storages = ({
   storage1,
@@ -33,8 +25,34 @@ const Storages = ({
   const context1 = useInitStorageContext(storage1);
   const context2 = useInitStorageContext(storage2);
 
+  const [open, setOpen] = useState(false);
+
+  const [transferData, setTransferData] = useState<{
+    src: StorageNameItem;
+    dst: StorageNameItem;
+  }>();
+
+  const onDragCallback = useCallback(
+    ({ src, dst }: { src: StorageNameItem; dst: StorageNameItem }) => {
+      setTransferData({ src, dst });
+      setOpen(true);
+
+      // setTransferData({
+      //   context1: {
+      //     storageName: src.storageName,
+      //     itemID: src.item.id,
+      //   },
+      // });
+    },
+    []
+  );
+
   return (
-    <DragProvider context1={context1} context2={context2}>
+    <DragProvider
+      context1={context1}
+      context2={context2}
+      callback={onDragCallback}
+    >
       <div className="w-1/2">
         <div className="font-bold">{storage1.name}</div>
         <StorageProvider context={context1}>
@@ -42,7 +60,15 @@ const Storages = ({
         </StorageProvider>
       </div>
       <div className="w-[80px] relative">
-        <ButtonWithModal context1={context1} context2={context2} />
+        {transferData && (
+          <ButtonWithModal
+            context1={context1}
+            context2={context2}
+            open={open}
+            close={() => setOpen(false)}
+            transferData={transferData}
+          />
+        )}
       </div>
       <div className="w-1/2">
         <div className="font-bold">{storage2.name}</div>
@@ -66,12 +92,17 @@ function App() {
   );
 }
 
-const transfer = (src: StorageContextType, dst: StorageContextType) => {
+const transfer = (
+  src: StorageContextType,
+  dst: StorageContextType,
+  transferData: { src: StorageNameItem; dst: StorageNameItem }
+) => {
   return transferTransferPost({
     src_name: src.storage.name,
     dst_name: dst.storage.name,
-    src_ids: src.selectedItems.map((item) => item.id),
-    dst_id: dst.selectedItems[0].id,
+
+    src_ids: [transferData.src.item.id],
+    dst_id: transferData.dst.item.id,
 
     src_credentials: {
       google_drive_token: src.googleDriveOauthToken?.access_token,
@@ -86,13 +117,23 @@ const transfer = (src: StorageContextType, dst: StorageContextType) => {
 const ButtonWithModal = ({
   context1,
   context2,
+  open,
+  close,
+  transferData,
 }: {
   context1: StorageContextType;
   context2: StorageContextType;
+  open: boolean;
+  close: () => void;
+  transferData: { src: StorageNameItem; dst: StorageNameItem };
 }) => {
-  const [modalState, setModalState] = useState<
-    "closed" | "right_arrow" | "left_arrow"
-  >("closed");
+  const [context1Item, context2Item, modalState] = useMemo(() => {
+    if (transferData.src.storageName === context1.storage.name) {
+      return [transferData.src.item, transferData.dst.item, "right_arrow"];
+    } else {
+      return [transferData.dst.item, transferData.src.item, "left_arrow"];
+    }
+  }, [context1, transferData]);
 
   const [transferring, setTransferring] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -102,17 +143,19 @@ const ButtonWithModal = ({
     async (from: StorageContextType, to: StorageContextType) => {
       setTransferring(true);
       try {
-        await transfer(from, to);
+        console.log("await transfer(from, to)", from, to);
+        await transfer(from, to, transferData);
         setSuccess(true);
-      } catch {
+      } catch (e) {
+        console.error(e);
         setFailed(true);
       } finally {
         setTransferring(false);
       }
 
-      setModalState("closed");
+      close();
     },
-    []
+    [close]
   );
 
   const onSuccessSnackBarClose = useCallback(
@@ -161,31 +204,19 @@ const ButtonWithModal = ({
         </Alert>
       </Snackbar>
 
-      <button
-        className="fixed bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded text-sm top-1/4 disabled:bg-blue-100"
-        disabled={
-          !transferEnabled(context1.selectedItems, context2.selectedItems)
-        }
-        onClick={() => setModalState("right_arrow")}
-      >
-        <FaArrowRight />
-      </button>
       <Modal
-        open={modalState != "closed"}
-        onClose={() => setModalState("closed")}
+        open={open}
+        onClose={close}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        // className="px-4 py-2"
       >
-        <div className="px-4 py-2 bg-gray-800 m-auto mt-12 w-1/2">
+        <div className="px-8 py-4 bg-gray-800 m-auto mt-12 w-1/2 rounded">
           <div className="text-white flex justify-center">
             <div className="w-1/2 text-right">
               <div className="font-bold text-sm">{context1.storage.name}</div>
               <ul className="list-disc">
-                {context1.selectedItems.map((item, i) => (
-                  <li className="text-xs" key={i}>
-                    {item.name}
-                  </li>
-                ))}
+                <li className="text-xs">{context1Item.name}</li>
               </ul>
             </div>
             <div className="mx-8 mt-2">
@@ -198,11 +229,7 @@ const ButtonWithModal = ({
             <div className="w-1/2 text-left">
               <div className="font-bold text-sm">{context2.storage.name}</div>
               <ul className="list-disc">
-                {context2.selectedItems.map((item, i) => (
-                  <li className="text-xs" key={i}>
-                    {item.name}
-                  </li>
-                ))}
+                <li className="text-xs">{context2Item.name}</li>
               </ul>
             </div>
           </div>
@@ -227,7 +254,7 @@ const ButtonWithModal = ({
           </div>
         </div>
       </Modal>
-      <button
+      {/* <button
         className="fixed bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded text-sm top-1/4 mt-12  disabled:bg-green-100"
         disabled={
           !transferEnabled(context2.selectedItems, context1.selectedItems)
@@ -235,7 +262,7 @@ const ButtonWithModal = ({
         onClick={() => setModalState("left_arrow")}
       >
         <FaArrowLeft />
-      </button>
+      </button> */}
     </>
   );
 };

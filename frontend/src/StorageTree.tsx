@@ -71,14 +71,14 @@ const Leaf = ({ item }: { item: Item }) => {
     listeners,
     attributes,
     transform,
-    isDragging,
   } = useDraggable({
     id: storageNameItemId,
   });
 
-  const { dstID } = useDragContext();
+  const { dst } = useDragContext();
 
-  const isOver = dstID == item.id;
+  const isOver =
+    dst?.storageName == context.storage.name && dst?.item.id == item.id;
 
   const { setNodeRef: droppableRef } = useDroppable({
     id: storageNameItemId,
