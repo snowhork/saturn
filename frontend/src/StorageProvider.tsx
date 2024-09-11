@@ -10,8 +10,8 @@ export type StorageContextType = {
   selectedItems: Item[];
   setSelectedItems: (item: Item[]) => void;
 
-  itemMap: Record<string, Item>;
-  addItem: (id: string, item: Item) => void;
+  itemMap: Record<string, { item: Item; parentID: string | null }>;
+  addItem: (id: string, item: Item, parentID: string | null) => void;
 
   googleDriveOauthToken?: OAuthToken;
   setGoogleDriveOauthToken: (token: OAuthToken) => void;
@@ -29,11 +29,16 @@ export const useInitStorageContext = (storage: Storage): StorageContextType => {
   const [authState, setAuthState] = useState<"waiting" | "ready">(
     storage.type === "local" ? "ready" : "waiting",
   );
-  const [itemMap, setItemMap] = useState<Record<string, Item>>({});
+  const [itemMap, setItemMap] = useState<
+    Record<string, { item: Item; parentID: string | null }>
+  >({});
   const [selectedItems, setSelectedItems] = useState<Item[]>([]);
-  const addItem = useCallback((id: string, item: Item) => {
-    setItemMap((prev) => ({ ...prev, [id]: item }));
-  }, []);
+  const addItem = useCallback(
+    (id: string, item: Item, parentID: string | null) => {
+      setItemMap((prev) => ({ ...prev, [id]: { item, parentID } }));
+    },
+    [],
+  );
 
   const [googleDriveOauthToken, _setGoogleDriveOauthToken] =
     useState<OAuthToken>();
