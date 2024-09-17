@@ -1,6 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
 
-
 import {
   transferTransferPost,
   useListStoragesGet,
@@ -17,8 +16,6 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 import DragProvider, { StorageNameItem } from "../components/DragProvider";
 
-
-
 export const meta: MetaFunction = () => {
   return [{ title: "Saturn" }, { name: "saturn", content: "Saturn" }];
 };
@@ -26,7 +23,7 @@ export const meta: MetaFunction = () => {
 const transfer = (
   src: StorageContextType,
   dst: StorageContextType,
-  transferData: { src: StorageNameItem; dst: StorageNameItem }
+  transferData: { src: StorageNameItem; dst: StorageNameItem },
 ) => {
   return transferTransferPost({
     src_name: src.storage.name,
@@ -86,7 +83,7 @@ const ButtonWithModal = ({
 
       close();
     },
-    [close]
+    [close, transferData],
   );
 
   const onSuccessSnackBarClose = useCallback(
@@ -97,7 +94,7 @@ const ButtonWithModal = ({
 
       setSuccess(false);
     },
-    []
+    [],
   );
 
   const onFailedSnackBarClose = useCallback(
@@ -108,7 +105,7 @@ const ButtonWithModal = ({
 
       setFailed(false);
     },
-    []
+    [],
   );
 
   return (
@@ -218,7 +215,7 @@ const Storages = ({
       //   },
       // });
     },
-    []
+    [],
   );
 
   return (
@@ -257,11 +254,11 @@ const Storages = ({
 export default function Index() {
   const { data } = useListStoragesGet();
 
-      return (
-        <>
-          <div className="flex w-full m-5">
-            {data && <Storages storage1={data.data[0]} storage2={data.data[1]} />}
-          </div>
-        </>
-      );
+  return (
+    <>
+      <div className="flex w-full m-5">
+        {data && <Storages storage1={data.data[0]} storage2={data.data[1]} />}
+      </div>
+    </>
+  );
 }

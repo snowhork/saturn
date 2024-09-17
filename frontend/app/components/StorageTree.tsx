@@ -1,8 +1,9 @@
-import { useListItemsItemsGet, useRootDirRootGet } from "../gen/default/default";
+import {
+  useListItemsItemsGet,
+  useRootDirRootGet,
+} from "../gen/default/default";
 import { Item } from "../gen/schema";
-import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
-import { useTreeViewApiRef } from "@mui/x-tree-view/hooks";
-import { TreeItem } from "@mui/x-tree-view/TreeItem";
+import { SimpleTreeView, TreeItem, useTreeViewApiRef } from "@mui/x-tree-view";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { useCallback, useEffect } from "react";
 import { useStorageContext } from "./StorageProvider";
@@ -54,7 +55,8 @@ const DriveLink = ({ id }: { id: string }) => {
     <a
       target="_blank"
       href={`https://drive.google.com/drive/folders/${id}`}
-      className="text-xs pt-1 pl-3 text-blue-400 cursor-pointer" rel="noreferrer"
+      className="text-xs pt-1 pl-3 text-blue-400 cursor-pointer"
+      rel="noreferrer"
     >
       <FaExternalLinkAlt />
     </a>
@@ -154,7 +156,7 @@ export const RootNode = () => {
     (_e: React.SyntheticEvent, ids: string[]) => {
       context.setSelectedItems(ids.map((id) => context.itemMap[id].item));
     },
-    [context]
+    [context],
   );
 
   useEffect(() => {

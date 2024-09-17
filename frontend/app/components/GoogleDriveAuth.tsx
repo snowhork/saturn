@@ -35,6 +35,7 @@ const GoogleDriveAuth = ({ storage }: { storage: Storage }) => {
         className="button text-white bg-blue-600 px-4 py-2 rounded font-bold"
         href={data.data}
         target="_blank"
+        rel="noreferrer"
       >
         Google Login
       </a>

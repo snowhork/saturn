@@ -107,7 +107,7 @@ const DragProvider = ({
         });
       }
     },
-    [context1, context2]
+    [context1, context2],
   );
 
   const onDragEnd = useCallback(() => {
