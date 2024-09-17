@@ -2,8 +2,8 @@ module.exports = {
   backend: {
     output: {
       mode: "tags-split",
-      target: "src/gen/backend.ts",
-      schemas: "src/gen/schema",
+      target: "app/gen/backend.ts",
+      schemas: "app/gen/schema",
       client: "react-query",
       clean: true,
     },
