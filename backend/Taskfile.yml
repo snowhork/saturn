@@ -17,4 +17,4 @@ tasks:
   gen:
     cmds:
       - rye run python openapi.py
-      - cd ../frontend/ && yarn gen
+      - cd ../frontendv2/ && yarn gen
