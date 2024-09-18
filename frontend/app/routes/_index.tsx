@@ -1,8 +1,8 @@
 import type { MetaFunction } from "@remix-run/node";
 
 import {
-  transferTransferPost,
-  useListStoragesGet,
+  transferApiTransferPost,
+  useListApiStoragesGet,
 } from "../gen/default/default";
 import { RootNode } from "../components/StorageTree";
 import { Storage } from "../gen/schema";
@@ -25,7 +25,7 @@ const transfer = (
   dst: StorageContextType,
   transferData: { src: StorageNameItem; dst: StorageNameItem },
 ) => {
-  return transferTransferPost({
+  return transferApiTransferPost({
     src_name: src.storage.name,
     dst_name: dst.storage.name,
 
@@ -252,7 +252,7 @@ const Storages = ({
 };
 
 export default function Index() {
-  const { data } = useListStoragesGet();
+  const { data } = useListApiStoragesGet();
 
   return (
     <>

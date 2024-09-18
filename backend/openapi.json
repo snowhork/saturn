@@ -5,11 +5,64 @@
     "version": "0.1.0"
   },
   "paths": {
-    "/health": {
+    "/": {
+      "get": {
+        "summary": "Index",
+        "operationId": "index__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{path_name}": {
+      "get": {
+        "summary": "Catch All",
+        "operationId": "catch_all__path_name__get",
+        "parameters": [
+          {
+            "name": "path_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Path Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/health": {
       "get": {
         "summary": "Health",
         "description": "ヘルスチェック",
-        "operationId": "health_health_get",
+        "operationId": "health_api_health_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -21,7 +74,7 @@
                     "ok"
                   ],
                   "const": "ok",
-                  "title": "Response Health Health Get"
+                  "title": "Response Health Api Health Get"
                 }
               }
             }
@@ -29,10 +82,10 @@
         }
       }
     },
-    "/storages": {
+    "/api/storages": {
       "get": {
         "summary": " List",
-        "operationId": "_list_storages_get",
+        "operationId": "_list_api_storages_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -43,7 +96,7 @@
                     "$ref": "#/components/schemas/Storage"
                   },
                   "type": "array",
-                  "title": "Response  List Storages Get"
+                  "title": "Response  List Api Storages Get"
                 }
               }
             }
@@ -51,10 +104,10 @@
         }
       }
     },
-    "/root": {
+    "/api/root": {
       "get": {
         "summary": " Root Dir",
-        "operationId": "_root_dir_root_get",
+        "operationId": "_root_dir_api_root_get",
         "parameters": [
           {
             "name": "name",
@@ -106,10 +159,10 @@
         }
       }
     },
-    "/items": {
+    "/api/items": {
       "get": {
         "summary": " List Items",
-        "operationId": "_list_items_items_get",
+        "operationId": "_list_items_api_items_get",
         "parameters": [
           {
             "name": "name",
@@ -156,7 +209,7 @@
                   "items": {
                     "$ref": "#/components/schemas/Item"
                   },
-                  "title": "Response  List Items Items Get"
+                  "title": "Response  List Items Api Items Get"
                 }
               }
             }
@@ -174,10 +227,10 @@
         }
       }
     },
-    "/transfer": {
+    "/api/transfer": {
       "post": {
         "summary": " Transfer",
-        "operationId": "_transfer_transfer_post",
+        "operationId": "_transfer_api_transfer_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -195,7 +248,7 @@
               "application/json": {
                 "schema": {
                   "type": "string",
-                  "title": "Response  Transfer Transfer Post"
+                  "title": "Response  Transfer Api Transfer Post"
                 }
               }
             }
@@ -213,10 +266,10 @@
         }
       }
     },
-    "/oauth/{name}/google_drive/auth": {
+    "/api/oauth/{name}/google_drive/auth": {
       "get": {
         "summary": "Auth",
-        "operationId": "auth_oauth__name__google_drive_auth_get",
+        "operationId": "auth_api_oauth__name__google_drive_auth_get",
         "parameters": [
           {
             "name": "name",
@@ -225,15 +278,6 @@
             "schema": {
               "type": "string",
               "title": "Name"
-            }
-          },
-          {
-            "name": "uid",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Uid"
             }
           }
         ],
@@ -244,7 +288,7 @@
               "application/json": {
                 "schema": {
                   "type": "string",
-                  "title": "Response Auth Oauth  Name  Google Drive Auth Get"
+                  "title": "Response Auth Api Oauth  Name  Google Drive Auth Get"
                 }
               }
             }
@@ -262,10 +306,10 @@
         }
       }
     },
-    "/oauth/{name}/google_drive/callback": {
+    "/api/oauth/{name}/google_drive/token": {
       "get": {
-        "summary": "Callback",
-        "operationId": "callback_oauth__name__google_drive_callback_get",
+        "summary": "Token",
+        "operationId": "token_api_oauth__name__google_drive_token_get",
         "parameters": [
           {
             "name": "name",
@@ -283,64 +327,6 @@
             "schema": {
               "type": "string",
               "title": "Code"
-            }
-          },
-          {
-            "name": "uid",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Uid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "title": "Response Callback Oauth  Name  Google Drive Callback Get"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/oauth/{name}/google_drive/token": {
-      "get": {
-        "summary": "Token",
-        "operationId": "token_oauth__name__google_drive_token_get",
-        "parameters": [
-          {
-            "name": "name",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Name"
-            }
-          },
-          {
-            "name": "uid",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Uid"
             }
           }
         ],
@@ -362,22 +348,6 @@
                 "schema": {
                   "$ref": "#/components/schemas/HTTPValidationError"
                 }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/": {
-      "get": {
-        "summary": "Index",
-        "operationId": "index__get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
               }
             }
           }

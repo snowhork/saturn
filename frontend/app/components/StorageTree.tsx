@@ -1,6 +1,6 @@
 import {
-  useListItemsItemsGet,
-  useRootDirRootGet,
+  useListItemsApiItemsGet,
+  useRootDirApiRootGet,
 } from "../gen/default/default";
 import { Item } from "../gen/schema";
 import { SimpleTreeView, TreeItem, useTreeViewApiRef } from "@mui/x-tree-view";
@@ -13,7 +13,7 @@ import { useDragContext } from "./DragProvider";
 const DirLeaf = ({ item }: { item: Item }) => {
   const context = useStorageContext();
 
-  const { data } = useListItemsItemsGet({
+  const { data } = useListItemsApiItemsGet({
     name: context.storage.name,
     id: item.id,
     google_drive_token: context.googleDriveOauthToken?.access_token || null,
@@ -147,7 +147,7 @@ const Leaf = ({ item }: { item: Item }) => {
 export const RootNode = () => {
   const context = useStorageContext();
 
-  const { data } = useRootDirRootGet({
+  const { data } = useRootDirApiRootGet({
     name: context.storage.name,
     google_drive_token: context.googleDriveOauthToken?.access_token || null,
   });
@@ -156,7 +156,7 @@ export const RootNode = () => {
     (_e: React.SyntheticEvent, ids: string[]) => {
       context.setSelectedItems(ids.map((id) => context.itemMap[id].item));
     },
-    [context],
+    [context]
   );
 
   useEffect(() => {

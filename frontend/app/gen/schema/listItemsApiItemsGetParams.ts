@@ -5,6 +5,8 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type AuthOauthNameGoogleDriveAuthGetParams = {
-  uid: string;
+export type ListItemsApiItemsGetParams = {
+  name: string;
+  id: string;
+  google_drive_token?: string | null;
 };

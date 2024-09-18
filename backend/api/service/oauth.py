@@ -12,8 +12,6 @@ class OAuthToken(BaseModel):
 
 
 class OAuthGoogleDrive:
-    uid_map: dict[str, OAuthToken] = {}
-
     def __init__(self, settings: GoogleDriveStorageSettings):
         self.client_id = settings.google_drive_storage_oauth_client_id
         self.client_secret = settings.google_drive_storage_oauth_client_secret
@@ -27,10 +25,10 @@ class OAuthGoogleDrive:
         ]
         self.token_url = "https://accounts.google.com/o/oauth2/token"
 
-    def auth(self, path: str, uid: str):
+    def auth_url(self, path: str):
         oauth = OAuth2Session(
             self.client_id,
-            redirect_uri=f"{self.redirect_uri}/{path}?uid={uid}",
+            redirect_uri=f"{self.redirect_uri}/{path}",
             scope=self.scope,
         )
 
@@ -38,10 +36,10 @@ class OAuthGoogleDrive:
 
         return auth_url
 
-    def fetch_token(self, path: str, uid: str, code: str):
+    def fetch_token(self, path: str, code: str):
         oauth = OAuth2Session(
             self.client_id,
-            redirect_uri=f"{self.redirect_uri}/{path}?uid={uid}",
+            redirect_uri=f"{self.redirect_uri}/{path}",
             scope=self.scope,
         )
 
@@ -50,14 +48,5 @@ class OAuthGoogleDrive:
         )
 
         oauth_token = OAuthToken(**token)
-        self.uid_map[uid] = oauth_token
 
         return oauth_token
-
-    def get_token_by_uid(self, uid: str):
-        if uid in self.uid_map:
-            token = self.uid_map[uid]
-            del self.uid_map[uid]
-            return token
-
-        return None

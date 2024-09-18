@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import {
-  useAuthOauthNameGoogleDriveAuthGet,
-  useTokenOauthNameGoogleDriveTokenGet,
+  useAuthApiOauthNameGoogleDriveAuthGet,
+  useTokenApiOauthNameGoogleDriveTokenGet,
 } from "../gen/default/default";
 import { useStorageContext } from "./StorageProvider";
 import { v4 as uuidv4 } from "uuid";
@@ -10,7 +10,7 @@ import { Storage } from "../gen/schema";
 const useSetGoogleDriveAuthToken = (name: string, uid: string) => {
   const context = useStorageContext();
 
-  const { data } = useTokenOauthNameGoogleDriveTokenGet(name, { uid });
+  const { data } = useTokenApiOauthNameGoogleDriveTokenGet(name, { uid });
 
   useEffect(() => {
     if (!data) return;
@@ -21,9 +21,7 @@ const useSetGoogleDriveAuthToken = (name: string, uid: string) => {
 const GoogleDriveAuth = ({ storage }: { storage: Storage }) => {
   const [uid] = useState<string>(uuidv4());
 
-  const { data } = useAuthOauthNameGoogleDriveAuthGet(storage.name, {
-    uid,
-  });
+  const { data } = useAuthApiOauthNameGoogleDriveAuthGet(storage.name);
 
   useSetGoogleDriveAuthToken(storage.name, uid);
 
