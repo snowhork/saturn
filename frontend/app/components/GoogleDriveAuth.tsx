@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
+  refreshApiOauthNameGoogleDriveRefreshPost,
   useAuthApiOauthNameGoogleDriveAuthGet,
-  // useTokenApiOauthNameGoogleDriveTokenGet,
 } from "../gen/default/default";
-import { useStorageContext } from "./StorageProvider";
-import { v4 as uuidv4 } from "uuid";
 import { OAuthToken, Storage } from "../gen/schema";
 
 const localStorageKey = (name: string) => `google_drive_token_${name}`;
@@ -42,14 +40,21 @@ const GoogleDriveAuth = ({
   const token = getGoogleDriveLocalStorage(storage.name);
 
   useEffect(() => {
-    if (token) {
+    if (data && token) {
       if (Date.now() < token.expires_at) {
         setGoogleDriveAccessToken(token.access_token);
-      } else {
-        // TODO: refresh token
+        return;
       }
+
+      // expired
+      refreshApiOauthNameGoogleDriveRefreshPost(storage.name, {
+        refresh_token: token?.refresh_token,
+      }).then((res) => {
+        setGoogleDriveLocalStorage(storage.name, res.data);
+        setGoogleDriveAccessToken(token.access_token);
+      });
     }
-  }, [token, setGoogleDriveAccessToken]);
+  }, [data, token, setGoogleDriveAccessToken, storage.name]);
 
   if (!data) return <div>loading...</div>;
 

@@ -12,6 +12,7 @@ export * from "./healthApiHealthGet200";
 export * from "./item";
 export * from "./listItemsApiItemsGetParams";
 export * from "./oAuthToken";
+export * from "./refreshApiOauthNameGoogleDriveRefreshPostParams";
 export * from "./rootDirApiRootGetParams";
 export * from "./storage";
 export * from "./storageType";

@@ -1,10 +1,10 @@
-import { useNavigate, useParams, useSearchParams } from "@remix-run/react";
+import { useNavigate, useSearchParams } from "@remix-run/react";
 import { useEffect } from "react";
 import { setGoogleDriveLocalStorage } from "~/components/GoogleDriveAuth";
 import { tokenApiOauthNameGoogleDriveTokenPost } from "~/gen/default/default";
 
 const useFetchToken = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const code = searchParams.get("code");
   const name = searchParams.get("name");

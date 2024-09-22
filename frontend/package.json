@@ -6,10 +6,10 @@
   "scripts": {
     "build": "remix vite:build",
     "dev": "remix vite:dev",
-    "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
+    "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint app/",
     "preview": "vite preview",
     "typecheck": "tsc",
-    "fmt": "prettier . --write && eslint . --fix",
+    "fmt": "prettier app/ --write && eslint app/ --fix",
     "gen": "orval"
   },
   "dependencies": {

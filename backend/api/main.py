@@ -15,9 +15,11 @@ app.include_router(health_router, prefix="/api")
 app.include_router(storage_router, prefix="/api")
 app.include_router(oauth_google_drive_router, prefix="/api")
 
+
 @app.get("/{path_name:path}")
 async def catch_all(path_name: str):
     return FileResponse("./dist/index.html", media_type="text/html")
+
 
 app.add_middleware(
     CORSMiddleware,

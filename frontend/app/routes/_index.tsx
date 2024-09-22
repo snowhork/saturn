@@ -23,7 +23,7 @@ export const meta: MetaFunction = () => {
 const transfer = (
   src: StorageContextType,
   dst: StorageContextType,
-  transferData: { src: StorageNameItem; dst: StorageNameItem }
+  transferData: { src: StorageNameItem; dst: StorageNameItem },
 ) => {
   return transferApiTransferPost({
     src_name: src.storage.name,
@@ -83,7 +83,7 @@ const ButtonWithModal = ({
 
       close();
     },
-    [close, transferData]
+    [close, transferData],
   );
 
   const onSuccessSnackBarClose = useCallback(
@@ -94,7 +94,7 @@ const ButtonWithModal = ({
 
       setSuccess(false);
     },
-    []
+    [],
   );
 
   const onFailedSnackBarClose = useCallback(
@@ -105,7 +105,7 @@ const ButtonWithModal = ({
 
       setFailed(false);
     },
-    []
+    [],
   );
 
   return (
@@ -215,7 +215,7 @@ const Storages = ({
       //   },
       // });
     },
-    []
+    [],
   );
 
   return (

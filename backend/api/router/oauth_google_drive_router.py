@@ -22,3 +22,15 @@ def token(name: str, code: str) -> OAuthToken:
     token = storage.google_drive_oauth().fetch_token(name, "auth/callback/google", code)
 
     return token
+
+
+@oauth_google_drive_router.post("/oauth/{name}/google_drive/refresh")
+def refresh(name: str, refresh_token: str) -> OAuthToken:
+    storage = get_storage(name)
+    assert isinstance(storage, GoogleDriveStorage), "GoogleDriveStorage only"
+
+    token = storage.google_drive_oauth().refresh_token(
+        name, "auth/callback/google", refresh_token
+    )
+
+    return token

@@ -25,6 +25,7 @@ import type {
   Item,
   ListItemsApiItemsGetParams,
   OAuthToken,
+  RefreshApiOauthNameGoogleDriveRefreshPostParams,
   RootDirApiRootGetParams,
   Storage,
   TokenApiOauthNameGoogleDriveTokenPostParams,
@@ -895,6 +896,88 @@ export const useTokenApiOauthNameGoogleDriveTokenPost = <
 > => {
   const mutationOptions =
     getTokenApiOauthNameGoogleDriveTokenPostMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * @summary Refresh
+ */
+export const refreshApiOauthNameGoogleDriveRefreshPost = (
+  name: string,
+  params: RefreshApiOauthNameGoogleDriveRefreshPostParams,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<OAuthToken>> => {
+  return axios.post(`/api/oauth/${name}/google_drive/refresh`, undefined, {
+    ...options,
+    params: { ...params, ...options?.params },
+  });
+};
+
+export const getRefreshApiOauthNameGoogleDriveRefreshPostMutationOptions = <
+  TError = AxiosError<HTTPValidationError>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof refreshApiOauthNameGoogleDriveRefreshPost>>,
+    TError,
+    { name: string; params: RefreshApiOauthNameGoogleDriveRefreshPostParams },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof refreshApiOauthNameGoogleDriveRefreshPost>>,
+  TError,
+  { name: string; params: RefreshApiOauthNameGoogleDriveRefreshPostParams },
+  TContext
+> => {
+  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof refreshApiOauthNameGoogleDriveRefreshPost>>,
+    { name: string; params: RefreshApiOauthNameGoogleDriveRefreshPostParams }
+  > = (props) => {
+    const { name, params } = props ?? {};
+
+    return refreshApiOauthNameGoogleDriveRefreshPost(
+      name,
+      params,
+      axiosOptions,
+    );
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RefreshApiOauthNameGoogleDriveRefreshPostMutationResult =
+  NonNullable<
+    Awaited<ReturnType<typeof refreshApiOauthNameGoogleDriveRefreshPost>>
+  >;
+
+export type RefreshApiOauthNameGoogleDriveRefreshPostMutationError =
+  AxiosError<HTTPValidationError>;
+
+/**
+ * @summary Refresh
+ */
+export const useRefreshApiOauthNameGoogleDriveRefreshPost = <
+  TError = AxiosError<HTTPValidationError>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof refreshApiOauthNameGoogleDriveRefreshPost>>,
+    TError,
+    { name: string; params: RefreshApiOauthNameGoogleDriveRefreshPostParams },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof refreshApiOauthNameGoogleDriveRefreshPost>>,
+  TError,
+  { name: string; params: RefreshApiOauthNameGoogleDriveRefreshPostParams },
+  TContext
+> => {
+  const mutationOptions =
+    getRefreshApiOauthNameGoogleDriveRefreshPostMutationOptions(options);
 
   return useMutation(mutationOptions);
 };
