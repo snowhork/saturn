@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
 from api.service.oauth import OAuthToken
 from api.storage.storage import GoogleDriveStorage, get_storage
@@ -7,35 +7,30 @@ oauth_google_drive_router = APIRouter()
 
 
 @oauth_google_drive_router.get("/oauth/{name}/google_drive/auth")
-def auth(name: str, uid: str) -> str:
+def auth(name: str) -> str:
     storage = get_storage(name)
     assert isinstance(storage, GoogleDriveStorage), "GoogleDriveStorage only"
 
-    return storage.google_drive_oauth().auth(f"oauth/{name}/google_drive/callback", uid)
+    return storage.google_drive_oauth().auth_url(name, "auth/callback/google")
 
 
-@oauth_google_drive_router.get("/oauth/{name}/google_drive/callback")
-def callback(name: str, code: str, uid: str) -> str:
+@oauth_google_drive_router.post("/oauth/{name}/google_drive/token")
+def token(name: str, code: str) -> OAuthToken:
     storage = get_storage(name)
     assert isinstance(storage, GoogleDriveStorage), "GoogleDriveStorage only"
 
-    storage.google_drive_oauth().fetch_token(
-        f"oauth/{name}/google_drive/callback", uid, code
+    token = storage.google_drive_oauth().fetch_token(name, "auth/callback/google", code)
+
+    return token
+
+
+@oauth_google_drive_router.post("/oauth/{name}/google_drive/refresh")
+def refresh(name: str, refresh_token: str) -> OAuthToken:
+    storage = get_storage(name)
+    assert isinstance(storage, GoogleDriveStorage), "GoogleDriveStorage only"
+
+    token = storage.google_drive_oauth().refresh_token(
+        name, "auth/callback/google", refresh_token
     )
-
-    return "OK, please close this window."
-
-
-# this is ad-hoc endpoint to get token by uid.
-# Don't use this pattern in production.
-@oauth_google_drive_router.get("/oauth/{name}/google_drive/token")
-def token(name: str, uid: str) -> OAuthToken:
-    storage = get_storage(name)
-    assert isinstance(storage, GoogleDriveStorage), "GoogleDriveStorage only"
-
-    token = storage.google_drive_oauth().get_token_by_uid(uid)
-
-    if token is None:
-        raise HTTPException(status_code=404, detail="Token not found")
 
     return token

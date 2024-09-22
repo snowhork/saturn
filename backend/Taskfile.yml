@@ -7,7 +7,7 @@ tasks:
       - rye run ruff check api/
 
   dev:
-    cmd: rye run uvicorn api.main:app --reload --port 6644
+    cmd: google_drive_storage_oauth_redirect_uri=http://localhost:5173 rye run uvicorn api.main:app --reload --port 6644
 
   fmt:
     cmds:
@@ -17,4 +17,4 @@ tasks:
   gen:
     cmds:
       - rye run python openapi.py
-      - cd ../frontendv2/ && yarn gen
+      - cd ../frontend/ && yarn gen

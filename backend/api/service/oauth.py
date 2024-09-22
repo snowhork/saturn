@@ -12,8 +12,6 @@ class OAuthToken(BaseModel):
 
 
 class OAuthGoogleDrive:
-    uid_map: dict[str, OAuthToken] = {}
-
     def __init__(self, settings: GoogleDriveStorageSettings):
         self.client_id = settings.google_drive_storage_oauth_client_id
         self.client_secret = settings.google_drive_storage_oauth_client_secret
@@ -27,37 +25,41 @@ class OAuthGoogleDrive:
         ]
         self.token_url = "https://accounts.google.com/o/oauth2/token"
 
-    def auth(self, path: str, uid: str):
-        oauth = OAuth2Session(
+    def _oauth_session(self, name: str, path: str) -> OAuth2Session:
+        return OAuth2Session(
             self.client_id,
-            redirect_uri=f"{self.redirect_uri}/{path}?uid={uid}",
+            redirect_uri=f"{self.redirect_uri}/{path}?name={name}",
             scope=self.scope,
         )
+
+    def auth_url(self, name: str, path: str) -> str:
+        oauth = self._oauth_session(name, path)
 
         auth_url, state = oauth.authorization_url(self.authorization_base_url)
 
         return auth_url
 
-    def fetch_token(self, path: str, uid: str, code: str):
-        oauth = OAuth2Session(
-            self.client_id,
-            redirect_uri=f"{self.redirect_uri}/{path}?uid={uid}",
-            scope=self.scope,
-        )
+    def fetch_token(self, name: str, path: str, code: str):
+        oauth = self._oauth_session(name, path)
 
         token = oauth.fetch_token(
             token_url=self.token_url, code=code, client_secret=self.client_secret
         )
 
         oauth_token = OAuthToken(**token)
-        self.uid_map[uid] = oauth_token
 
         return oauth_token
 
-    def get_token_by_uid(self, uid: str):
-        if uid in self.uid_map:
-            token = self.uid_map[uid]
-            del self.uid_map[uid]
-            return token
+    def refresh_token(self, name: str, path: str, refresh_token: str):
+        oauth = self._oauth_session(name, path)
 
-        return None
+        new_token = oauth.refresh_token(
+            self.token_url,
+            refresh_token=refresh_token,
+            client_id=self.client_id,
+            client_secret=self.client_secret,
+        )
+
+        oauth_token = OAuthToken(**new_token)
+
+        return oauth_token

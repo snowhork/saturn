@@ -8,17 +8,18 @@ from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(title="Query API", version="0.1.0")
 
-app.include_router(health_router)
-app.include_router(storage_router)
-app.include_router(oauth_google_drive_router)
-
-
-@app.get("/")
-async def index():
-    return FileResponse("./dist/index.html", media_type="text/html")
-
 
 app.mount("/assets", StaticFiles(directory="dist/assets/"), name="dist")
+
+app.include_router(health_router, prefix="/api")
+app.include_router(storage_router, prefix="/api")
+app.include_router(oauth_google_drive_router, prefix="/api")
+
+
+@app.get("/{path_name:path}")
+async def catch_all(path_name: str):
+    return FileResponse("./dist/index.html", media_type="text/html")
+
 
 app.add_middleware(
     CORSMiddleware,

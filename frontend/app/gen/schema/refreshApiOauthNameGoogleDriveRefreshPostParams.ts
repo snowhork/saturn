@@ -5,6 +5,6 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type TokenOauthNameGoogleDriveTokenGetParams = {
-  uid: string;
+export type RefreshApiOauthNameGoogleDriveRefreshPostParams = {
+  refresh_token: string;
 };

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useCallback, useContext } from "react";
-import { OAuthToken, Item, Storage } from "../gen/schema";
+import { Item, Storage } from "../gen/schema";
 import GoogleDriveAuth from "./GoogleDriveAuth";
 
 export type StorageContextType = {
@@ -13,8 +13,8 @@ export type StorageContextType = {
   itemMap: Record<string, { item: Item; parentID: string | null }>;
   addItem: (id: string, item: Item, parentID: string | null) => void;
 
-  googleDriveOauthToken?: OAuthToken;
-  setGoogleDriveOauthToken: (token: OAuthToken) => void;
+  googleDriveAccessToken?: string;
+  setGoogleDriveAccessToken: (token: string) => void;
 };
 
 const StorageContext = createContext<StorageContextType | null>(null);
@@ -40,11 +40,11 @@ export const useInitStorageContext = (storage: Storage): StorageContextType => {
     [],
   );
 
-  const [googleDriveOauthToken, _setGoogleDriveOauthToken] =
-    useState<OAuthToken>();
+  const [googleDriveAccessToken, _setGoogleDriveAccessToken] =
+    useState<string>();
 
-  const setGoogleDriveOauthToken = useCallback((token: OAuthToken) => {
-    _setGoogleDriveOauthToken(token);
+  const setGoogleDriveAccessToken = useCallback((token: string) => {
+    _setGoogleDriveAccessToken(token);
     setAuthState("ready");
   }, []);
 
@@ -55,8 +55,8 @@ export const useInitStorageContext = (storage: Storage): StorageContextType => {
     setSelectedItems,
     itemMap,
     addItem,
-    googleDriveOauthToken,
-    setGoogleDriveOauthToken,
+    googleDriveAccessToken,
+    setGoogleDriveAccessToken,
   };
 };
 
@@ -66,7 +66,12 @@ const StorageAuth = ({ children }: { children: React.ReactNode }) => {
   if (context.authState === "ready") return children;
 
   if (context.storage.type === "google_drive") {
-    return <GoogleDriveAuth storage={context.storage} />;
+    return (
+      <GoogleDriveAuth
+        storage={context.storage}
+        setGoogleDriveAccessToken={context.setGoogleDriveAccessToken}
+      />
+    );
   }
 
   if (context.storage.type === "local") {

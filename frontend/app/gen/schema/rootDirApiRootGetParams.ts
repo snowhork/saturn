@@ -5,8 +5,7 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type ListItemsItemsGetParams = {
+export type RootDirApiRootGetParams = {
   name: string;
-  id: string;
   google_drive_token?: string | null;
 };
