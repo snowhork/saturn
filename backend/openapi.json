@@ -5,59 +5,6 @@
     "version": "0.1.0"
   },
   "paths": {
-    "/": {
-      "get": {
-        "summary": "Index",
-        "operationId": "index__get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        }
-      }
-    },
-    "/{path_name}": {
-      "get": {
-        "summary": "Catch All",
-        "operationId": "catch_all__path_name__get",
-        "parameters": [
-          {
-            "name": "path_name",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Path Name"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/health": {
       "get": {
         "summary": "Health",
@@ -307,9 +254,9 @@
       }
     },
     "/api/oauth/{name}/google_drive/token": {
-      "get": {
+      "post": {
         "summary": "Token",
-        "operationId": "token_api_oauth__name__google_drive_token_get",
+        "operationId": "token_api_oauth__name__google_drive_token_post",
         "parameters": [
           {
             "name": "name",
@@ -338,6 +285,43 @@
                 "schema": {
                   "$ref": "#/components/schemas/OAuthToken"
                 }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{path_name}": {
+      "get": {
+        "summary": "Catch All",
+        "operationId": "catch_all__path_name__get",
+        "parameters": [
+          {
+            "name": "path_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Path Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
               }
             }
           },

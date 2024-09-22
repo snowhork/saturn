@@ -25,10 +25,10 @@ class OAuthGoogleDrive:
         ]
         self.token_url = "https://accounts.google.com/o/oauth2/token"
 
-    def auth_url(self, path: str):
+    def auth_url(self, name: str, path: str) -> str:
         oauth = OAuth2Session(
             self.client_id,
-            redirect_uri=f"{self.redirect_uri}/{path}",
+            redirect_uri=f"{self.redirect_uri}/{path}?name={name}",
             scope=self.scope,
         )
 
@@ -36,10 +36,10 @@ class OAuthGoogleDrive:
 
         return auth_url
 
-    def fetch_token(self, path: str, code: str):
+    def fetch_token(self, name: str, path: str, code: str):
         oauth = OAuth2Session(
             self.client_id,
-            redirect_uri=f"{self.redirect_uri}/{path}",
+            redirect_uri=f"{self.redirect_uri}/{path}?name={name}",
             scope=self.scope,
         )
 

@@ -27,270 +27,9 @@ import type {
   OAuthToken,
   RootDirApiRootGetParams,
   Storage,
-  TokenApiOauthNameGoogleDriveTokenGetParams,
+  TokenApiOauthNameGoogleDriveTokenPostParams,
   TransferRequest,
 } from ".././schema";
-
-/**
- * @summary Index
- */
-export const indexGet = (
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<unknown>> => {
-  return axios.get(`/`, options);
-};
-
-export const getIndexGetQueryKey = () => {
-  return [`/`] as const;
-};
-
-export const getIndexGetQueryOptions = <
-  TData = Awaited<ReturnType<typeof indexGet>>,
-  TError = AxiosError<unknown>,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<Awaited<ReturnType<typeof indexGet>>, TError, TData>
-  >;
-  axios?: AxiosRequestConfig;
-}) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
-
-  const queryKey = queryOptions?.queryKey ?? getIndexGetQueryKey();
-
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof indexGet>>> = ({
-    signal,
-  }) => indexGet({ signal, ...axiosOptions });
-
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof indexGet>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
-
-export type IndexGetQueryResult = NonNullable<
-  Awaited<ReturnType<typeof indexGet>>
->;
-export type IndexGetQueryError = AxiosError<unknown>;
-
-export function useIndexGet<
-  TData = Awaited<ReturnType<typeof indexGet>>,
-  TError = AxiosError<unknown>,
->(options: {
-  query: Partial<
-    UseQueryOptions<Awaited<ReturnType<typeof indexGet>>, TError, TData>
-  > &
-    Pick<
-      DefinedInitialDataOptions<
-        Awaited<ReturnType<typeof indexGet>>,
-        TError,
-        TData
-      >,
-      "initialData"
-    >;
-  axios?: AxiosRequestConfig;
-}): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useIndexGet<
-  TData = Awaited<ReturnType<typeof indexGet>>,
-  TError = AxiosError<unknown>,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<Awaited<ReturnType<typeof indexGet>>, TError, TData>
-  > &
-    Pick<
-      UndefinedInitialDataOptions<
-        Awaited<ReturnType<typeof indexGet>>,
-        TError,
-        TData
-      >,
-      "initialData"
-    >;
-  axios?: AxiosRequestConfig;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useIndexGet<
-  TData = Awaited<ReturnType<typeof indexGet>>,
-  TError = AxiosError<unknown>,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<Awaited<ReturnType<typeof indexGet>>, TError, TData>
-  >;
-  axios?: AxiosRequestConfig;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey };
-/**
- * @summary Index
- */
-
-export function useIndexGet<
-  TData = Awaited<ReturnType<typeof indexGet>>,
-  TError = AxiosError<unknown>,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<Awaited<ReturnType<typeof indexGet>>, TError, TData>
-  >;
-  axios?: AxiosRequestConfig;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getIndexGetQueryOptions(options);
-
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
-    queryKey: QueryKey;
-  };
-
-  query.queryKey = queryOptions.queryKey;
-
-  return query;
-}
-
-/**
- * @summary Catch All
- */
-export const catchAllPathNameGet = (
-  pathName: string,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<unknown>> => {
-  return axios.get(`/${pathName}`, options);
-};
-
-export const getCatchAllPathNameGetQueryKey = (pathName: string) => {
-  return [`/${pathName}`] as const;
-};
-
-export const getCatchAllPathNameGetQueryOptions = <
-  TData = Awaited<ReturnType<typeof catchAllPathNameGet>>,
-  TError = AxiosError<HTTPValidationError>,
->(
-  pathName: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof catchAllPathNameGet>>,
-        TError,
-        TData
-      >
-    >;
-    axios?: AxiosRequestConfig;
-  },
-) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ?? getCatchAllPathNameGetQueryKey(pathName);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof catchAllPathNameGet>>
-  > = ({ signal }) =>
-    catchAllPathNameGet(pathName, { signal, ...axiosOptions });
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!pathName,
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof catchAllPathNameGet>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
-
-export type CatchAllPathNameGetQueryResult = NonNullable<
-  Awaited<ReturnType<typeof catchAllPathNameGet>>
->;
-export type CatchAllPathNameGetQueryError = AxiosError<HTTPValidationError>;
-
-export function useCatchAllPathNameGet<
-  TData = Awaited<ReturnType<typeof catchAllPathNameGet>>,
-  TError = AxiosError<HTTPValidationError>,
->(
-  pathName: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof catchAllPathNameGet>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof catchAllPathNameGet>>,
-          TError,
-          TData
-        >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
-  },
-): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useCatchAllPathNameGet<
-  TData = Awaited<ReturnType<typeof catchAllPathNameGet>>,
-  TError = AxiosError<HTTPValidationError>,
->(
-  pathName: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof catchAllPathNameGet>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof catchAllPathNameGet>>,
-          TError,
-          TData
-        >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
-  },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useCatchAllPathNameGet<
-  TData = Awaited<ReturnType<typeof catchAllPathNameGet>>,
-  TError = AxiosError<HTTPValidationError>,
->(
-  pathName: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof catchAllPathNameGet>>,
-        TError,
-        TData
-      >
-    >;
-    axios?: AxiosRequestConfig;
-  },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey };
-/**
- * @summary Catch All
- */
-
-export function useCatchAllPathNameGet<
-  TData = Awaited<ReturnType<typeof catchAllPathNameGet>>,
-  TError = AxiosError<HTTPValidationError>,
->(
-  pathName: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof catchAllPathNameGet>>,
-        TError,
-        TData
-      >
-    >;
-    axios?: AxiosRequestConfig;
-  },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getCatchAllPathNameGetQueryOptions(pathName, options);
-
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
-    queryKey: QueryKey;
-  };
-
-  query.queryKey = queryOptions.queryKey;
-
-  return query;
-}
 
 /**
  * ヘルスチェック
@@ -1085,37 +824,103 @@ export function useAuthApiOauthNameGoogleDriveAuthGet<
 /**
  * @summary Token
  */
-export const tokenApiOauthNameGoogleDriveTokenGet = (
+export const tokenApiOauthNameGoogleDriveTokenPost = (
   name: string,
-  params: TokenApiOauthNameGoogleDriveTokenGetParams,
+  params: TokenApiOauthNameGoogleDriveTokenPostParams,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<OAuthToken>> => {
-  return axios.get(`/api/oauth/${name}/google_drive/token`, {
+  return axios.post(`/api/oauth/${name}/google_drive/token`, undefined, {
     ...options,
     params: { ...params, ...options?.params },
   });
 };
 
-export const getTokenApiOauthNameGoogleDriveTokenGetQueryKey = (
-  name: string,
-  params: TokenApiOauthNameGoogleDriveTokenGetParams,
-) => {
-  return [
-    `/api/oauth/${name}/google_drive/token`,
-    ...(params ? [params] : []),
-  ] as const;
+export const getTokenApiOauthNameGoogleDriveTokenPostMutationOptions = <
+  TError = AxiosError<HTTPValidationError>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenPost>>,
+    TError,
+    { name: string; params: TokenApiOauthNameGoogleDriveTokenPostParams },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenPost>>,
+  TError,
+  { name: string; params: TokenApiOauthNameGoogleDriveTokenPostParams },
+  TContext
+> => {
+  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenPost>>,
+    { name: string; params: TokenApiOauthNameGoogleDriveTokenPostParams }
+  > = (props) => {
+    const { name, params } = props ?? {};
+
+    return tokenApiOauthNameGoogleDriveTokenPost(name, params, axiosOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
 };
 
-export const getTokenApiOauthNameGoogleDriveTokenGetQueryOptions = <
-  TData = Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenGet>>,
+export type TokenApiOauthNameGoogleDriveTokenPostMutationResult = NonNullable<
+  Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenPost>>
+>;
+
+export type TokenApiOauthNameGoogleDriveTokenPostMutationError =
+  AxiosError<HTTPValidationError>;
+
+/**
+ * @summary Token
+ */
+export const useTokenApiOauthNameGoogleDriveTokenPost = <
+  TError = AxiosError<HTTPValidationError>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenPost>>,
+    TError,
+    { name: string; params: TokenApiOauthNameGoogleDriveTokenPostParams },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenPost>>,
+  TError,
+  { name: string; params: TokenApiOauthNameGoogleDriveTokenPostParams },
+  TContext
+> => {
+  const mutationOptions =
+    getTokenApiOauthNameGoogleDriveTokenPostMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * @summary Catch All
+ */
+export const catchAllPathNameGet = (
+  pathName: string,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<unknown>> => {
+  return axios.get(`/${pathName}`, options);
+};
+
+export const getCatchAllPathNameGetQueryKey = (pathName: string) => {
+  return [`/${pathName}`] as const;
+};
+
+export const getCatchAllPathNameGetQueryOptions = <
+  TData = Awaited<ReturnType<typeof catchAllPathNameGet>>,
   TError = AxiosError<HTTPValidationError>,
 >(
-  name: string,
-  params: TokenApiOauthNameGoogleDriveTokenGetParams,
+  pathName: string,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenGet>>,
+        Awaited<ReturnType<typeof catchAllPathNameGet>>,
         TError,
         TData
       >
@@ -1126,52 +931,46 @@ export const getTokenApiOauthNameGoogleDriveTokenGetQueryOptions = <
   const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
   const queryKey =
-    queryOptions?.queryKey ??
-    getTokenApiOauthNameGoogleDriveTokenGetQueryKey(name, params);
+    queryOptions?.queryKey ?? getCatchAllPathNameGetQueryKey(pathName);
 
   const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenGet>>
+    Awaited<ReturnType<typeof catchAllPathNameGet>>
   > = ({ signal }) =>
-    tokenApiOauthNameGoogleDriveTokenGet(name, params, {
-      signal,
-      ...axiosOptions,
-    });
+    catchAllPathNameGet(pathName, { signal, ...axiosOptions });
 
   return {
     queryKey,
     queryFn,
-    enabled: !!name,
+    enabled: !!pathName,
     ...queryOptions,
   } as UseQueryOptions<
-    Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenGet>>,
+    Awaited<ReturnType<typeof catchAllPathNameGet>>,
     TError,
     TData
   > & { queryKey: QueryKey };
 };
 
-export type TokenApiOauthNameGoogleDriveTokenGetQueryResult = NonNullable<
-  Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenGet>>
+export type CatchAllPathNameGetQueryResult = NonNullable<
+  Awaited<ReturnType<typeof catchAllPathNameGet>>
 >;
-export type TokenApiOauthNameGoogleDriveTokenGetQueryError =
-  AxiosError<HTTPValidationError>;
+export type CatchAllPathNameGetQueryError = AxiosError<HTTPValidationError>;
 
-export function useTokenApiOauthNameGoogleDriveTokenGet<
-  TData = Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenGet>>,
+export function useCatchAllPathNameGet<
+  TData = Awaited<ReturnType<typeof catchAllPathNameGet>>,
   TError = AxiosError<HTTPValidationError>,
 >(
-  name: string,
-  params: TokenApiOauthNameGoogleDriveTokenGetParams,
+  pathName: string,
   options: {
     query: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenGet>>,
+        Awaited<ReturnType<typeof catchAllPathNameGet>>,
         TError,
         TData
       >
     > &
       Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenGet>>,
+          Awaited<ReturnType<typeof catchAllPathNameGet>>,
           TError,
           TData
         >,
@@ -1180,23 +979,22 @@ export function useTokenApiOauthNameGoogleDriveTokenGet<
     axios?: AxiosRequestConfig;
   },
 ): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useTokenApiOauthNameGoogleDriveTokenGet<
-  TData = Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenGet>>,
+export function useCatchAllPathNameGet<
+  TData = Awaited<ReturnType<typeof catchAllPathNameGet>>,
   TError = AxiosError<HTTPValidationError>,
 >(
-  name: string,
-  params: TokenApiOauthNameGoogleDriveTokenGetParams,
+  pathName: string,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenGet>>,
+        Awaited<ReturnType<typeof catchAllPathNameGet>>,
         TError,
         TData
       >
     > &
       Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenGet>>,
+          Awaited<ReturnType<typeof catchAllPathNameGet>>,
           TError,
           TData
         >,
@@ -1205,16 +1003,15 @@ export function useTokenApiOauthNameGoogleDriveTokenGet<
     axios?: AxiosRequestConfig;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useTokenApiOauthNameGoogleDriveTokenGet<
-  TData = Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenGet>>,
+export function useCatchAllPathNameGet<
+  TData = Awaited<ReturnType<typeof catchAllPathNameGet>>,
   TError = AxiosError<HTTPValidationError>,
 >(
-  name: string,
-  params: TokenApiOauthNameGoogleDriveTokenGetParams,
+  pathName: string,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenGet>>,
+        Awaited<ReturnType<typeof catchAllPathNameGet>>,
         TError,
         TData
       >
@@ -1223,19 +1020,18 @@ export function useTokenApiOauthNameGoogleDriveTokenGet<
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 /**
- * @summary Token
+ * @summary Catch All
  */
 
-export function useTokenApiOauthNameGoogleDriveTokenGet<
-  TData = Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenGet>>,
+export function useCatchAllPathNameGet<
+  TData = Awaited<ReturnType<typeof catchAllPathNameGet>>,
   TError = AxiosError<HTTPValidationError>,
 >(
-  name: string,
-  params: TokenApiOauthNameGoogleDriveTokenGetParams,
+  pathName: string,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof tokenApiOauthNameGoogleDriveTokenGet>>,
+        Awaited<ReturnType<typeof catchAllPathNameGet>>,
         TError,
         TData
       >
@@ -1243,11 +1039,7 @@ export function useTokenApiOauthNameGoogleDriveTokenGet<
     axios?: AxiosRequestConfig;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getTokenApiOauthNameGoogleDriveTokenGetQueryOptions(
-    name,
-    params,
-    options,
-  );
+  const queryOptions = getCatchAllPathNameGetQueryOptions(pathName, options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

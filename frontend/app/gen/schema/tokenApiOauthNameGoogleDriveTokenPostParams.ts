@@ -5,6 +5,6 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type TokenApiOauthNameGoogleDriveTokenGetParams = {
+export type TokenApiOauthNameGoogleDriveTokenPostParams = {
   code: string;
 };

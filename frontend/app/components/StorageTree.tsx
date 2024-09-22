@@ -16,7 +16,7 @@ const DirLeaf = ({ item }: { item: Item }) => {
   const { data } = useListItemsApiItemsGet({
     name: context.storage.name,
     id: item.id,
-    google_drive_token: context.googleDriveOauthToken?.access_token || null,
+    google_drive_token: context.googleDriveAccessToken || null,
   });
 
   useEffect(() => {
@@ -49,7 +49,7 @@ const DirLeaf = ({ item }: { item: Item }) => {
 const DriveLink = ({ id }: { id: string }) => {
   const context = useStorageContext();
 
-  if (!context.googleDriveOauthToken) return null;
+  if (!context.googleDriveAccessToken) return null;
 
   return (
     <a
@@ -149,7 +149,7 @@ export const RootNode = () => {
 
   const { data } = useRootDirApiRootGet({
     name: context.storage.name,
-    google_drive_token: context.googleDriveOauthToken?.access_token || null,
+    google_drive_token: context.googleDriveAccessToken || null,
   });
 
   const handleSelectedItems = useCallback(

@@ -11,14 +11,14 @@ def auth(name: str) -> str:
     storage = get_storage(name)
     assert isinstance(storage, GoogleDriveStorage), "GoogleDriveStorage only"
 
-    return storage.google_drive_oauth().auth_url("auth/callback/google")
+    return storage.google_drive_oauth().auth_url(name, "auth/callback/google")
 
 
-@oauth_google_drive_router.get("/oauth/{name}/google_drive/token")
+@oauth_google_drive_router.post("/oauth/{name}/google_drive/token")
 def token(name: str, code: str) -> OAuthToken:
     storage = get_storage(name)
     assert isinstance(storage, GoogleDriveStorage), "GoogleDriveStorage only"
 
-    token = storage.google_drive_oauth().fetch_token("auth/callback/google", code)
+    token = storage.google_drive_oauth().fetch_token(name, "auth/callback/google", code)
 
     return token

@@ -15,7 +15,7 @@ export * from "./oAuthToken";
 export * from "./rootDirApiRootGetParams";
 export * from "./storage";
 export * from "./storageType";
-export * from "./tokenApiOauthNameGoogleDriveTokenGetParams";
+export * from "./tokenApiOauthNameGoogleDriveTokenPostParams";
 export * from "./transferRequest";
 export * from "./validationError";
 export * from "./validationErrorLocItem";
