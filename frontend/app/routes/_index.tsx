@@ -23,13 +23,13 @@ export const meta: MetaFunction = () => {
 const transfer = (
   src: StorageContextType,
   dst: StorageContextType,
-  transferData: { src: StorageNameItem; dst: StorageNameItem },
+  transferData: { src: StorageNameItem[]; dst: StorageNameItem },
 ) => {
   return transferApiTransferPost({
     src_name: src.storage.name,
     dst_name: dst.storage.name,
 
-    src_ids: [transferData.src.item.id],
+    src_ids: transferData.src.map((item) => item.item.id),
     dst_id: transferData.dst.item.id,
 
     src_credentials: {
@@ -53,13 +53,21 @@ const ButtonWithModal = ({
   context2: StorageContextType;
   open: boolean;
   close: () => void;
-  transferData: { src: StorageNameItem; dst: StorageNameItem };
+  transferData: { src: StorageNameItem[]; dst: StorageNameItem };
 }) => {
-  const [context1Item, context2Item, modalState] = useMemo(() => {
-    if (transferData.src.storageName === context1.storage.name) {
-      return [transferData.src.item, transferData.dst.item, "right_arrow"];
+  const [context1Items, context2Items, modalState] = useMemo(() => {
+    if (transferData.src[0].storageName === context1.storage.name) {
+      return [
+        transferData.src.map((s) => s.item),
+        [transferData.dst.item],
+        "right_arrow",
+      ];
     } else {
-      return [transferData.dst.item, transferData.src.item, "left_arrow"];
+      return [
+        [transferData.dst.item],
+        transferData.src.map((s) => s.item),
+        "left_arrow",
+      ];
     }
   }, [context1, transferData]);
 
@@ -144,7 +152,11 @@ const ButtonWithModal = ({
             <div className="w-1/2 text-right">
               <div className="font-bold text-sm">{context1.storage.name}</div>
               <ul className="list-disc">
-                <li className="text-xs">{context1Item.name}</li>
+                {context1Items.map((item) => (
+                  <li key={item.id} className="text-xs">
+                    {item.name}
+                  </li>
+                ))}
               </ul>
             </div>
             <div className="mx-8 mt-2">
@@ -157,7 +169,11 @@ const ButtonWithModal = ({
             <div className="w-1/2 text-left">
               <div className="font-bold text-sm">{context2.storage.name}</div>
               <ul className="list-disc">
-                <li className="text-xs">{context2Item.name}</li>
+                {context2Items.map((item) => (
+                  <li key={item.id} className="text-xs">
+                    {item.name}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -199,12 +215,12 @@ const Storages = ({
   const [open, setOpen] = useState(false);
 
   const [transferData, setTransferData] = useState<{
-    src: StorageNameItem;
+    src: StorageNameItem[];
     dst: StorageNameItem;
   }>();
 
   const onDragCallback = useCallback(
-    ({ src, dst }: { src: StorageNameItem; dst: StorageNameItem }) => {
+    ({ src, dst }: { src: StorageNameItem[]; dst: StorageNameItem }) => {
       setTransferData({ src, dst });
       setOpen(true);
 
