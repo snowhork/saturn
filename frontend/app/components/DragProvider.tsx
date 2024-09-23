@@ -127,6 +127,7 @@ const DragProvider = ({
         }
         const newSet = new Set(prev);
         newSet.add(itemID);
+        setSrcStorageName(storageName);
         console.log("onDragMove", "append", newSet);
         return newSet;
       });
@@ -191,7 +192,17 @@ const DragProvider = ({
 
   const onDragEnd = useCallback(() => {
     setActive(null);
+    setDst(null);
+
     if (!srcStorageName || !dst || selectedIDs.size == 0) {
+      return;
+    }
+
+    if (
+      !active ||
+      !selectedIDs.has(active.item.id) ||
+      active.storageName != srcStorageName
+    ) {
       return;
     }
 
@@ -201,9 +212,7 @@ const DragProvider = ({
     }));
 
     callback({ src, dst });
-
-    setDst(null);
-  }, [callback, context1, context2, dst, selectedIDs, srcStorageName]);
+  }, [active, callback, context1, context2, dst, selectedIDs, srcStorageName]);
 
   return (
     <DragContext.Provider
