@@ -48,11 +48,15 @@ const GoogleDriveAuth = ({
 
       // expired
       refreshApiOauthNameGoogleDriveRefreshPost(storage.name, {
-        refresh_token: token?.refresh_token,
-      }).then((res) => {
-        setGoogleDriveLocalStorage(storage.name, res.data);
-        setGoogleDriveAccessToken(token.access_token);
-      });
+        refresh_token: token.refresh_token,
+      })
+        .then((res) => {
+          setGoogleDriveLocalStorage(storage.name, res.data);
+          setGoogleDriveAccessToken(token.access_token);
+        })
+        .catch((res) => {
+          console.error("refresh error", res);
+        });
     }
   }, [data, token, setGoogleDriveAccessToken, storage.name]);
 
