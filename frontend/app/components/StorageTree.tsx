@@ -5,7 +5,7 @@ import {
 import { Item } from "../gen/schema";
 import { SimpleTreeView, TreeItem, useTreeViewApiRef } from "@mui/x-tree-view";
 import { FaExternalLinkAlt } from "react-icons/fa";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useStorageContext } from "./StorageProvider";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import { useDragContext } from "./DragProvider";
@@ -77,7 +77,7 @@ const Leaf = ({ item }: { item: Item }) => {
     id: storageNameItemId,
   });
 
-  const { dst } = useDragContext();
+  const { src, srcIDs, srcStorageName, dst } = useDragContext();
 
   const isOver =
     dst?.storageName == context.storage.name && dst?.item.id == item.id;
@@ -90,57 +90,80 @@ const Leaf = ({ item }: { item: Item }) => {
     ? `translate(${transform.x}px, ${transform.y}px)`
     : undefined;
 
-  return item.is_dir ? (
-    <div className="relative">
-      <TreeItem
-        itemId={item.id}
-        label={
-          <div
-            ref={droppableRef}
-            className={isOver ? "bg-blue-700 bg-opacity-50" : ""}
-          >
-            <div
-              ref={draggableRef}
-              {...attributes}
-              {...listeners}
-              style={{
-                transform: transformStyle,
-                height: "fit-content",
-              }}
-            >
-              <div className="flex">
-                {item.name}
-                <DriveLink id={item.id} />
-              </div>
-            </div>
-          </div>
-        }
-      >
-        <DirLeaf item={item} />
-      </TreeItem>
-    </div>
-  ) : (
-    <TreeItem
-      itemId={item.id}
-      label={
-        <div
-          ref={droppableRef}
-          className={isOver ? "bg-blue-700 bg-opacity-50" : ""}
-        >
-          <div
-            ref={draggableRef}
-            {...attributes}
-            {...listeners}
-            style={{
-              transform: transformStyle,
-              height: "fit-content",
-            }}
-          >
-            <div className="flex">{item.name}</div>
-          </div>
+  const onDragCountBudge = useMemo(() => {
+    if (src != null && src.item.id == item.id && srcIDs.has(item.id)) {
+      return (
+        <div className="flex items-center justify-center ml-2 mt-1 w-4 h-4 text-xs bg-red-500 text-white rounded-full">
+          {srcIDs.size}
         </div>
+      );
+    }
+
+    return <></>;
+  }, [item.id, src, srcIDs]);
+
+  return (
+    <div
+      className={
+        "rounded-sm " +
+        (isOver ? "bg-blue-500 bg-opacity-50 " : "") +
+        (srcStorageName == context.storage.name && srcIDs.has(item.id)
+          ? "bg-green-500 bg-opacity-50 "
+          : "") +
+        (src != null && src.item.id != item.id && srcIDs.has(item.id)
+          ? "opacity-50 "
+          : "")
       }
-    ></TreeItem>
+    >
+      <div ref={droppableRef}>
+        <div>
+          {item.is_dir ? (
+            <div className="relative">
+              <TreeItem
+                itemId={item.id}
+                label={
+                  <div
+                    className="flex"
+                    ref={draggableRef}
+                    {...attributes}
+                    {...listeners}
+                    style={{
+                      transform: transformStyle,
+                      height: "fit-content",
+                    }}
+                  >
+                    {item.name}
+                    <DriveLink id={item.id} />
+                    {onDragCountBudge}
+                  </div>
+                }
+              >
+                <DirLeaf item={item} />
+              </TreeItem>
+            </div>
+          ) : (
+            <TreeItem
+              itemId={item.id}
+              label={
+                <div
+                  className="flex"
+                  ref={draggableRef}
+                  {...attributes}
+                  {...listeners}
+                  style={{
+                    transform: transformStyle,
+                    height: "fit-content",
+                  }}
+                >
+                  {item.name}
+                  {onDragCountBudge}
+                </div>
+              }
+            />
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
