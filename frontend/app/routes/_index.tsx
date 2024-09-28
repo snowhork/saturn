@@ -240,7 +240,7 @@ const Storages = ({
       context2={context2}
       callback={onDragCallback}
     >
-      <div className="w-1/2">
+      <div className="w-1/2 overflow-y-auto h-screen">
         <div className="font-bold">{storage1.name}</div>
         <StorageProvider context={context1}>
           <RootNode />
@@ -257,7 +257,7 @@ const Storages = ({
           />
         )}
       </div>
-      <div className="w-1/2">
+      <div className="w-1/2 overflow-y-auto h-screen">
         <div className="font-bold">{storage2.name}</div>
         <StorageProvider context={context2}>
           <RootNode />
